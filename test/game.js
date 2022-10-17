@@ -1,3 +1,4 @@
+import { assert } from 'chai';
 import {
   width,
   height,
@@ -11,8 +12,6 @@ import {
 import Game from '../src/game.js';
 import Message from '../src/message.js';
 import { Vehicle, Rocket } from '../src/model.js';
-
-import { assert } from 'chai'; 
 
 describe('game.js', () => {
   describe('Game methods', () => {

@@ -111,8 +111,19 @@ class Vehicle extends MovingEntity {
    * @param {*} angle The angle expressed in radians.
    * @param {*} color The color expressed in RGB hex code.
    */
-  constructor(id, timestamp, x, y, speed, angle,
-    isAccelerating, isReversing, isTurningLeft, isTurningRight, color) {
+  constructor(
+    id,
+    timestamp,
+    x,
+    y,
+    speed,
+    angle,
+    isAccelerating,
+    isReversing,
+    isTurningLeft,
+    isTurningRight,
+    color,
+  ) {
     super(id, timestamp, x, y, speed, angle);
     this.isAccelerating = isAccelerating;
     this.isReversing = isReversing;
