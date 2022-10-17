@@ -1,0 +1,37 @@
+{
+  "name": "4-handling-events",
+  "version": "1.0.0",
+  "description": "",
+  "type": "module",
+  "scripts": {
+    "start": "node --experimental-modules server.js",
+    "watch": "nodemon --experimental-modules server.js",
+    "test": "mocha --require esm",
+    "test-01": "mocha -r esm --grep '(01).*'",
+    "test-02": "mocha -r esm --grep '(02).*'",
+    "test-03": "mocha -r esm --grep '(03).*'",
+    "test-04": "mocha -r esm --grep '(04).*'",
+    "test-05": "mocha -r esm --grep '(05).*'",
+    "test-06": "mocha -r esm --grep '(06).*'",
+    "test-07": "mocha -r esm --grep '(07).*'",
+    "test-08": "mocha -r esm --grep '(08).*'",
+    "test-09": "mocha -r esm --grep '(09).*'",
+    "test-10": "mocha -r esm --grep '(10).*'",
+    "test-11": "mocha -r esm --grep '(11).*'",
+    "test-12": "mocha -r esm --grep '(12).*'"
+  },
+  "author": "Bertil Chapuis",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.18.2"
+  },
+  "devDependencies": {
+    "chai": "^4.3.6",
+    "eslint": "^8.25.0",
+    "eslint-config-airbnb-base": "^15.0.0",
+    "eslint-plugin-import": "^2.26.0",
+    "esm": "^3.2.25",
+    "mocha": "^10.1.0",
+    "nodemon": "^2.0.20"
+  }
+}
