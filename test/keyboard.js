@@ -5,15 +5,22 @@ import keyboard from '../src/keyboard.js';
 import { keysValues } from '../src/constants.js';
 import Message from '../src/message.js';
 
+/**
+ * A Mock to emulate the KeyboardEvent.
+ * @returns {{clear(): void, window: {addEventListener(*, *): void}, emit(*, *): void}}
+ */
 function createMock() {
   const events = new EventEmitter();
   return {
+    // Emits an event
     emit(event, key) {
       events.emit(event, { key });
     },
+    // Clears all the listeners
     clear() {
       events.removeAllListeners();
     },
+    // Mocks the window object
     window: {
       addEventListener(event, listener) {
         events.on(event, listener);
@@ -64,5 +71,27 @@ describe('keyboard.js', () => {
       done();
     });
     mock.emit('keyup', keysValues.arrowDown);
+  });
+
+  it('keyboard should not execute the listener when the same key is pressed twice', () => {
+    let numberOfCalls = 0;
+    keyboard(() => {
+      numberOfCalls++;
+    });
+    mock.emit('keydown', keysValues.arrowLeft);
+    mock.emit('keydown', keysValues.arrowLeft);
+    assert.equal(numberOfCalls, 1);
+  });
+
+  it('keyboard should execute the listener when the same key is pressed twice and released', () => {
+    let numberOfCalls = 0;
+    keyboard(() => {
+      numberOfCalls++;
+    });
+    mock.emit('keydown', keysValues.arrowLeft);
+    mock.emit('keydown', keysValues.arrowLeft);
+    mock.emit('keyup', keysValues.arrowLeft);
+    mock.emit('keydown', keysValues.arrowLeft);
+    assert.equal(numberOfCalls, 3);
   });
 });
