@@ -124,7 +124,8 @@ class Game extends Map {
         entity.isTurningRight = isDown;
         break;
       case keysValues.space:
-        this.fire(id);
+        // only fire if the key is pressed down
+        if (isDown) this.fire(id);
         break;
       default:
     }
