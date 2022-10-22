@@ -12,15 +12,17 @@ The listener is only executed one time when the same key is pressed multiple tim
  */
 function keyboard(listener) {
   // object key is the key, value is the event type to prevent multiple events for the same key
+  // Do not use a Set because we will use more than two event types in the future.
   const lastEventEmitted = {};
-  ['keydown', 'keyup'].forEach((event) => {
-    window.addEventListener(event, ({ key }) => {
-      if (lastEventEmitted[key] === event) {
+  ['keydown', 'keyup'].forEach((type) => {
+    window.addEventListener(type, (event) => {
+      event.stopPropagation();
+      if (lastEventEmitted[event.key] === type) {
         // The event was already emitted
         return;
       }
-      lastEventEmitted[key] = event;
-      listener(new Message(event, key));
+      lastEventEmitted[event.key] = type;
+      listener(new Message(type, event.key));
     });
   });
 }

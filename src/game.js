@@ -20,14 +20,13 @@ class Game extends Map {
   constructor() {
     super();
     this.counter = 0;
-    this.ticks = 0;
   }
 
   /**
    * Returns the current timestamp.
    */
   timestamp() {
-    return this.ticks;
+    return Date.now();
   }
 
   /**
@@ -102,12 +101,12 @@ class Game extends Map {
    * @param id {number} The id of the player
    * @param message {Message}
    */
-  // TODO: Create the onMessage(id, message) method
   onMessage(id, message) {
-    /**
-     * @type {Vehicle}
-     */
     const entity = this.get(id);
+    if (!entity) {
+      // The entity does not exist anymore
+      return;
+    }
     // eslint-disable-next-line default-case
     const isDown = message.action === 'keydown';
     switch (message.object) {
@@ -135,13 +134,11 @@ class Game extends Map {
    * Updates the state of the game
    */
   move() {
-    this.ticks += tick;
     for (const entity of this.values()) {
       entity.move();
-      if (entity instanceof Rocket) {
-        if (this.timestamp() - entity.created > rocketTTL) {
+      if (entity instanceof Rocket) { // Refactor: not POO friendly
+        if (entity.timestamp - entity.created > rocketTTL) {
           this.delete(entity.id);
-          // eslint-disable-next-line no-continue
           continue;
         }
         for (const vehicle of this.vehicles()) {
@@ -150,6 +147,11 @@ class Game extends Map {
             vehicle.health -= 1;
             break;
           }
+        }
+      }
+      if (entity instanceof Vehicle) { // Refactor: not POO friendly
+        if (entity.health <= 0) {
+          this.delete(entity.id);
         }
       }
     }

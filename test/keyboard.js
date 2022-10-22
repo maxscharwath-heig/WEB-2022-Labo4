@@ -1,42 +1,32 @@
-// TODO: Test the keyboard function or one of its components
 import { assert } from 'chai';
-import { EventEmitter } from 'events';
+import sinon from 'sinon';
+import jsdom from 'jsdom';
 import keyboard from '../src/keyboard.js';
 import { keysValues } from '../src/constants.js';
 import Message from '../src/message.js';
 
 /**
  * A Mock to emulate the KeyboardEvent.
- * @returns {{clear(): void, window: {addEventListener(*, *): void}, emit(*, *): void}}
+ * @returns {{reset(): void, emit(*, *): void}}
  */
 function createMock() {
-  const events = new EventEmitter();
+  global.window = new jsdom.JSDOM().window;
   return {
     // Emits an event
     emit(event, key) {
-      events.emit(event, { key });
+      global.window.dispatchEvent(new window.KeyboardEvent(event, { key }));
     },
-    // Clears all the listeners
-    clear() {
-      events.removeAllListeners();
-    },
-    // Mocks the window object
-    window: {
-      addEventListener(event, listener) {
-        events.on(event, listener);
-      },
+    // resets the mock
+    reset() {
+      global.window = new jsdom.JSDOM().window;
     },
   };
 }
 
 const mock = createMock();
 describe('keyboard.js', () => {
-  before('initialize mock', () => {
-    // create a tiny mock window object
-    global.window = mock.window;
-  });
-  beforeEach('clear mock', () => {
-    mock.clear();
+  beforeEach('reset mock', () => {
+    mock.reset();
   });
 
   it('mock should have been initialized', () => {
@@ -44,12 +34,10 @@ describe('keyboard.js', () => {
     assert.isDefined(window.addEventListener);
   });
   it('mock should emit events', () => {
-    let called = false;
-    window.addEventListener('keydown', () => {
-      called = true;
-    });
+    const callback = sinon.fake();
+    window.addEventListener('keydown', callback);
     mock.emit('keydown', 'a');
-    assert.isTrue(called);
+    assert.isTrue(callback.calledOnce);
   });
   it('keyboard should be an function', () => {
     assert.isFunction(keyboard);
@@ -74,24 +62,20 @@ describe('keyboard.js', () => {
   });
 
   it('keyboard should not execute the listener when the same key is pressed twice', () => {
-    let numberOfCalls = 0;
-    keyboard(() => {
-      numberOfCalls++;
-    });
+    const callback = sinon.fake();
+    keyboard(callback);
     mock.emit('keydown', keysValues.arrowLeft);
     mock.emit('keydown', keysValues.arrowLeft);
-    assert.equal(numberOfCalls, 1);
+    assert.isTrue(callback.calledOnce);
   });
 
   it('keyboard should execute the listener when the same key is pressed twice and released', () => {
-    let numberOfCalls = 0;
-    keyboard(() => {
-      numberOfCalls++;
-    });
+    const callback = sinon.fake();
+    keyboard(callback);
     mock.emit('keydown', keysValues.arrowLeft);
     mock.emit('keydown', keysValues.arrowLeft);
     mock.emit('keyup', keysValues.arrowLeft);
     mock.emit('keydown', keysValues.arrowLeft);
-    assert.equal(numberOfCalls, 3);
+    assert.isTrue(callback.calledThrice);
   });
 });

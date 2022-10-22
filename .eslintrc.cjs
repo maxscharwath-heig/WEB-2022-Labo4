@@ -20,5 +20,6 @@ module.exports = {
     'no-plusplus': 'off',
     'no-bitwise': 'off',
     'no-undef': 'off',
+    'no-continue': 'off',
   },
 };
