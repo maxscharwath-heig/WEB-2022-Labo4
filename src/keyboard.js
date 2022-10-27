@@ -1,4 +1,5 @@
 import Message from './message.js';
+import { keysValues } from './constants.js';
 
 /*
 The keyboard function listens to keydown and keyup events and executes the listener with a Message.
@@ -16,9 +17,8 @@ function keyboard(listener) {
   const lastEventEmitted = {};
   ['keydown', 'keyup'].forEach((type) => {
     window.addEventListener(type, (event) => {
-      event.stopPropagation();
-      if (lastEventEmitted[event.key] === type) {
-        // The event was already emitted
+      if (!Object.values(keysValues).includes(event.key) || lastEventEmitted[event.key] === type) {
+        // The event was already emitted or the key is not a valid key
         return;
       }
       lastEventEmitted[event.key] = type;

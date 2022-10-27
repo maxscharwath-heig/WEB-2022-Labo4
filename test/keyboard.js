@@ -78,4 +78,18 @@ describe('keyboard.js', () => {
     mock.emit('keydown', keysValues.arrowLeft);
     assert.isTrue(callback.calledThrice);
   });
+
+  it('keyboard should not execute the listener when the key is not valid', () => {
+    const callback = sinon.fake();
+    keyboard(callback);
+    mock.emit('keydown', 'a');
+    assert.isFalse(callback.called);
+  });
+
+  it('keyboard should not execute the listener when the event is not keydown or keyup', () => {
+    const callback = sinon.fake();
+    keyboard(callback);
+    mock.emit('click', keysValues.arrowLeft);
+    assert.isFalse(callback.called);
+  });
 });
