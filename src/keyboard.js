@@ -17,6 +17,8 @@ function keyboard(listener) {
   const lastEventEmitted = {};
   ['keydown', 'keyup'].forEach((type) => {
     window.addEventListener(type, (event) => {
+      // we can check if event.repeat is true, but it is not supported by all browsers
+
       if (!Object.values(keysValues).includes(event.key) || lastEventEmitted[event.key] === type) {
         // The event was already emitted or the key is not a valid key
         return;
